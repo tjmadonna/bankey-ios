@@ -36,6 +36,10 @@ extension AccountSummaryViewController {
         tableView.delegate = self
         tableView.dataSource = self
 
+        tableView.register(AccountSummaryCell.self, forCellReuseIdentifier: AccountSummaryCell.reuseId)
+        tableView.rowHeight = AccountSummaryCell.rowHeight
+        tableView.tableFooterView = UIView() // Blank footer view
+
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
 
@@ -62,8 +66,10 @@ extension AccountSummaryViewController {
 extension AccountSummaryViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
-        cell.textLabel?.text = games[indexPath.row]
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: AccountSummaryCell.reuseId, for: indexPath) as? AccountSummaryCell else {
+            fatalError("Table view cell should be of type AccountSummaryCell")
+        }
+
         return cell
     }
 
