@@ -9,6 +9,26 @@ import UIKit
 
 class AccountSummaryCell: UITableViewCell {
 
+    // MARK: - Account
+    enum AccountType: String {
+        case banking = "Banking"
+        case creditCard = "Credit Card"
+        case investment = "Investment"
+    }
+
+    // MARK: - View Model
+    struct ViewModel {
+        let accountType: AccountType
+        let accountName: String
+        let balance: Decimal
+
+        var balanceAsAttributedString: NSAttributedString {
+            return CurrencyFormatter().makeAttributedCurrency(balance)
+        }
+    }
+
+    let viewModel: ViewModel? = nil
+
     let typeLabel = UILabel()
     let underlineView = UIView()
     let nameLabel = UILabel()
@@ -60,7 +80,7 @@ extension AccountSummaryCell {
 
         balanceAmountLabel.translatesAutoresizingMaskIntoConstraints = false
         balanceAmountLabel.textAlignment = .right
-        balanceAmountLabel.attributedText = makeFormattedBalance(dollars: "929,466", cents: "63")
+        balanceAmountLabel.attributedText = makeFormattedBalance(dollars: "XXX,XXX", cents: "XX")
 
         chevronImageView.translatesAutoresizingMaskIntoConstraints = false
         chevronImageView.image = UIImage(systemName: "chevron.right")?.withTintColor(appColor, renderingMode: .alwaysOriginal)
@@ -123,6 +143,29 @@ extension AccountSummaryCell {
         rootString.append(centString)
 
         return rootString
+    }
+
+}
+
+extension AccountSummaryCell {
+
+    func configure(with viewModel: ViewModel) {
+
+        typeLabel.text = viewModel.accountType.rawValue
+        nameLabel.text = viewModel.accountName
+        balanceAmountLabel.attributedText = viewModel.balanceAsAttributedString
+
+        switch viewModel.accountType {
+        case .banking:
+            underlineView.backgroundColor = appColor
+            balanceLabel.text = "Current balance"
+        case .creditCard:
+            underlineView.backgroundColor = .systemOrange
+            balanceLabel.text = "Balance"
+        case .investment:
+            underlineView.backgroundColor = .systemPurple
+            balanceLabel.text = "Value"
+        }
     }
 
 }
